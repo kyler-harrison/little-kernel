@@ -18,12 +18,13 @@ void clear_screen(void) {
 	}
 }
 
-// char in output defined by 2 bytes: str is first byte, color is second byte
+// char in output defined by 2 bytes: str byte and color byte
 void print_str(char *str, unsigned char color) {
 	int idx = 0;
 
 	while (str[idx]) {
-		// defines character with color in terminal
+		// this makes a 2 byte (16 bit input) where the first 8 bits represent the color
+		// and the second 8 bits represent the character
 		terminal_buff[vga_idx] = (unsigned short) str[idx] | (unsigned short) color << 8;
 		idx++;
 		vga_idx++;
@@ -36,7 +37,7 @@ void main(void) {
 
 	clear_screen();
 	print_str("welcome to screen", GREEN);
-	vga_idx = 80;  // new line
+	vga_idx = 80;  // go to new line
 	print_str("farewell", RED);
 
 	return;
