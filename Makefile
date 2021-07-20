@@ -7,10 +7,11 @@ CFG = grub.cfg
 ISO_PATH := iso
 BOOT_PATH := $(ISO_PATH)/boot
 GRUB_PATH := $(BOOT_PATH)/grub
+ISO_NAME = little-kernel
 
 .PHONY: all
 all: bootloader kernel linker iso
-	@echo Make has completed.
+	@echo Make complete.
 
 bootloader: boot.asm
 	nasm -f elf32 boot.asm -o boot.o
@@ -26,7 +27,7 @@ iso: kernel
 	$(CP) $(BIN) $(BOOT_PATH)
 	$(CP) $(CFG) $(GRUB_PATH)
 	grub-file --is-x86-multiboot $(BOOT_PATH)/$(BIN)
-	grub-mkrescue -o my-kernel.iso $(ISO_PATH)
+	grub-mkrescue -o $(ISO_NAME).iso $(ISO_PATH)
 
 .PHONY: clean
 clean:
