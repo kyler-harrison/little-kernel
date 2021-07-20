@@ -1,0 +1,5 @@
+To boot in virtualbox, do a default configuration and create .vdi, then:
+-> settings
+	-> storage
+		-> Controller: IDE -> add optical drive -> select .iso file
+	
