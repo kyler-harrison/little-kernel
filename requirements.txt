@@ -1,0 +1,7 @@
+binutils
+gcc
+grub-common
+grub-pc
+make
+nasm
+xorriso
