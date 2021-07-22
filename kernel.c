@@ -7,6 +7,7 @@
 
 unsigned short *terminal_buff;
 unsigned int vga_idx;
+unsigned int new_line = 80;  // how much to add to vga_idx to get to next line
 
 void clear_screen(void) {
 	int idx = 0;
@@ -25,20 +26,25 @@ void print_str(char *str, unsigned char color) {
 	while (str[idx]) {
 		// this makes a 2 byte (16 bit input) where the first 8 bits represent the color
 		// and the second 8 bits represent the character
-		terminal_buff[vga_idx] = (unsigned short) str[idx] | (unsigned short) color << 8;
+		if (str[idx] != '\n') {
+			terminal_buff[vga_idx] = (unsigned short) str[idx] | (unsigned short) color << 8;
+			vga_idx++;
+			// TODO add check for line wrapping
+		} else {
+			vga_idx = (vga_idx / new_line + 1) * new_line;  // get to start idx of current line, get to start idx of next
+		}
+
 		idx++;
-		vga_idx++;
 	}
 } 
 
 void main(void) {
 	terminal_buff = (unsigned short *) VGA_ADDR;
 	vga_idx = 0;
-
 	clear_screen();
-	print_str("welcome to screen", GREEN);
-	vga_idx = 80;  // go to new line
-	print_str("farewell", RED);
+
+	print_str("welcome \nto screen\n", GREEN);
+	print_str("fare\nwell", RED);
 
 	return;
 }
