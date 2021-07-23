@@ -1,5 +1,6 @@
 binutils
 gcc
+gcc-multilib
 grub-common
 grub-pc
 make
