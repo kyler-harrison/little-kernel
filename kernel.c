@@ -1,5 +1,5 @@
 #define VGA_ADDR 0xB8000  // video memory starts here
-#define KEYBOARD_ADDR 0x60  // is this the key press buffer?
+#define KEYBOARD_ADDR 0x60  // where keypresses go (is this just a port?)
 #define BLACK 0
 #define GREEN 2
 #define RED 4
@@ -9,7 +9,6 @@
 unsigned short *terminal_buff;  // vga terminal display
 unsigned int vga_idx;  // track location in terminal
 unsigned int newline = 80;  // how many characters fit in one line of screen 
-unsigned short *keyboard_buff;
 
 // empty screen
 void clear_screen(void) {
@@ -46,46 +45,29 @@ void print_str(char *str, unsigned char color) {
 	}
 
 	// a single str automatically wraps, but a newline may still be needed at the end
-	if (idx % newline > 0 && idx != 0) {
+	if (idx / newline > 0 && idx != 0 && str[idx - 1] != '\n') {
 		vga_newline();
 	}
 } 
 
 void main(void) {
 	terminal_buff = (unsigned short *) VGA_ADDR;
-	//keyboard_buff = (unsigned short *) KEYBOARD_ADDR;
-
 	vga_idx = 0;
 	clear_screen();
 
-	//char c = (char) keyboard_buff[0] + 48;
-	//key[0] = c;
-	//
-	
 	print_str("welcome to screen\n", GREEN);
-	//char *key_buff = (char *) 0x60;
-
-	unsigned char first_result;
-	unsigned char result;
-	asm("in %%dx, %%al" : "=a" (first_result) : "d" (0x60));
-	char *c;
-	//c[0] = first_result;
-	//print_str(c, RED);
+	unsigned char input;
 
 	while (1) {
-		asm("in %%dx, %%al" : "=a" (result) : "d" (0x60));
+		// read value (byte) at keyboard addr into input variable
+		asm("in %%dx, %%al" : "=a" (input) : "d" (KEYBOARD_ADDR));  
 
-		if (result != first_result) {
-			c[0] = result;
-			print_str(c, RED);
-			first_result = result;
+		if (input == 0x1C) {
+			print_str("ENTER\n", RED);
+			print_str("BREAKING", RED);
+			input = 0x0;
+			break;
 		}
-
-		/*
-		if (key_buff[0] == 0x1) {
-			print_str("success\n", RED);
-		}
-		*/
 	}
 
 	return;
