@@ -9,7 +9,7 @@ section .multiboot
 
 ; where the actual assembly code goes
 section .text
-global start                 ; where executtion begins (see below)
+global start                 ; where execution begins (see below)
 extern main                  ; main function defined in C file
 
 start:
