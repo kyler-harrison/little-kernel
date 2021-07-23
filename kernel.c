@@ -26,7 +26,7 @@ void vga_newline(void) {
 	vga_idx = (vga_idx / newline + 1) * newline;  // get to start idx of current line, get to start idx of next
 }
 
-// char in output defined by 2 bytes: color byte and str byte
+// char in output defined by 2 bytes: str byte and color byte
 void print_str(char *str, unsigned char color) {
 	int idx = 0;
 
