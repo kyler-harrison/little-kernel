@@ -10,25 +10,27 @@ GRUB_PATH := $(BOOT_PATH)/grub
 ISO_NAME = little-kernel
 
 .PHONY: all
-all: bootloader kernel linker iso
+all: bootloader kernel.obj linker iso
 	@echo Make complete.
 
 bootloader: boot.asm
 	nasm -f elf32 boot.asm -o boot.o
 
-kernel: kernel.c
-	gcc -m32 -c kernel.c -o kernel.o
+kernel.obj: kernel/kernel.c
+	gcc -m32 -c kernel/kernel.c -o kernel/kernel.o
 
-linker: linker.ld boot.o kernel.o
-	ld -m elf_i386 -T linker.ld -o kernel boot.o kernel.o
+linker: linker.ld boot.o kernel/kernel.o
+	ld -m elf_i386 -T linker.ld -o kernel/kernel boot.o kernel/kernel.o
 
-iso: kernel
+iso: kernel.obj
 	$(MKDIR) $(GRUB_PATH)
-	$(CP) $(BIN) $(BOOT_PATH)
+	$(CP) $(BIN)/$(BIN) $(BOOT_PATH)
 	$(CP) $(CFG) $(GRUB_PATH)
 	grub-file --is-x86-multiboot $(BOOT_PATH)/$(BIN)
 	grub-mkrescue -o $(ISO_NAME).iso $(ISO_PATH)
 
-.PHONY: clean
+PHONY: clean
 clean:
-		$(RM) *.o $(BIN) *iso/
+		$(RM) kernel/*.o kernel/kernel
+		$(RM) *iso/
+		$(RM) *.o
