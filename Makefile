@@ -18,7 +18,7 @@ iso: kernel.obj
 	grub-file --is-x86-multiboot iso/boot/kernel
 	grub-mkrescue -o little-kernel.iso iso
 
-PHONY: clean
+.PHONY: clean
 clean:
 		rm -rf kernel/*.o kernel/kernel
 		rm -rf boot/*.o
