@@ -13,14 +13,14 @@ ISO_NAME = little-kernel
 all: bootloader kernel.obj linker iso
 	@echo Make complete.
 
-bootloader: boot.asm
-	nasm -f elf32 boot.asm -o boot.o
+bootloader: boot/boot.asm
+	nasm -f elf32 boot/boot.asm -o boot/boot.o
 
 kernel.obj: kernel/kernel.c
 	gcc -m32 -c kernel/kernel.c -o kernel/kernel.o
 
-linker: linker.ld boot.o kernel/kernel.o
-	ld -m elf_i386 -T linker.ld -o kernel/kernel boot.o kernel/kernel.o
+linker: linker.ld boot/boot.o kernel/kernel.o
+	ld -m elf_i386 -T linker.ld -o kernel/kernel boot/boot.o kernel/kernel.o
 
 iso: kernel.obj
 	$(MKDIR) $(GRUB_PATH)
@@ -32,5 +32,5 @@ iso: kernel.obj
 PHONY: clean
 clean:
 		$(RM) kernel/*.o kernel/kernel
+		$(RM) boot/*.o
 		$(RM) *iso/
-		$(RM) *.o
