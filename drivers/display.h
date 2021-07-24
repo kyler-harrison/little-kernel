@@ -1,6 +1,7 @@
 #define VGA_ADDR 0xB8000  
 #define ROWS 25
 #define COLS 80
+#define MAX_IDX ROWS * COLS
 #define BLACK 0
 #define GREEN 2
 #define RED 4
