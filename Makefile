@@ -1,14 +1,3 @@
-CP := cp
-RM := rm -rf
-MKDIR := mkdir -pv
-
-BIN = kernel
-CFG = grub.cfg
-ISO_PATH := iso
-BOOT_PATH := $(ISO_PATH)/boot
-GRUB_PATH := $(BOOT_PATH)/grub
-ISO_NAME = little-kernel
-
 .PHONY: all
 all: bootloader kernel.obj linker iso
 	@echo Make complete.
@@ -23,14 +12,14 @@ linker: linker.ld boot/boot.o kernel/kernel.o
 	ld -m elf_i386 -T linker.ld -o kernel/kernel boot/boot.o kernel/kernel.o
 
 iso: kernel.obj
-	$(MKDIR) $(GRUB_PATH)
-	$(CP) $(BIN)/$(BIN) $(BOOT_PATH)
-	$(CP) $(CFG) $(GRUB_PATH)
-	grub-file --is-x86-multiboot $(BOOT_PATH)/$(BIN)
-	grub-mkrescue -o $(ISO_NAME).iso $(ISO_PATH)
+	mkdir -pv iso/boot/grub
+	cp kernel/kernel iso/boot
+	cp grub.cfg iso/boot/grub
+	grub-file --is-x86-multiboot iso/boot/kernel
+	grub-mkrescue -o little-kernel.iso iso
 
 PHONY: clean
 clean:
-		$(RM) kernel/*.o kernel/kernel
-		$(RM) boot/*.o
-		$(RM) *iso/
+		rm -rf kernel/*.o kernel/kernel
+		rm -rf boot/*.o
+		rm -rf *iso/
