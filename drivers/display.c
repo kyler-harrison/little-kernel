@@ -1,4 +1,5 @@
 #include "display.h"
+#include "ports.h"
 
 unsigned short *terminal_buff = (unsigned short *) VGA_ADDR;  // vga terminal display
 unsigned int vga_idx = 0;  // track cursor in terminal
@@ -9,8 +10,15 @@ void clear_screen(void) {
 	
 	int i;
 	for (i = 0; i < COLS * ROWS; i++) {
-		terminal_buff[i] = (unsigned short) BLACK << 8 | (unsigned short) ' ';
+		terminal_buff[i] = (unsigned short) WHITE << 8 | (unsigned short) ' ';
 	}
+}
+
+void set_cursor(int vga_idx) {
+	write_port(CURSOR_CTRL_ADDR, VGA_HIGH);
+	write_port(CURSOR_DATA_ADDR, (unsigned char) vga_idx >> 8);
+	write_port(CURSOR_CTRL_ADDR, VGA_LOW);
+	write_port(CURSOR_DATA_ADDR, (unsigned char) vga_idx & 0xff);
 }
 
 // move to next line on screen
@@ -28,7 +36,7 @@ void shift(void) {
 		if (i < (MAX_IDX - COLS) * COLS) {
 			terminal_buff[i] = terminal_buff[i + COLS];
 		} else {
-			terminal_buff[i] = (unsigned short) BLACK << 8 | (unsigned short) ' ';
+			terminal_buff[i] = (unsigned short) WHITE << 8 | (unsigned short) ' ';
 		}
 	}
 
@@ -38,6 +46,7 @@ void shift(void) {
 // char in output defined by 2 bytes: str byte and color byte
 void print_str(char *str, unsigned char color) {
 	int idx = 0;
+	int cursor_offset;
 
 	while (str[idx]) {
 		// 2 byte input where first byte represents color and second represents character
@@ -50,9 +59,11 @@ void print_str(char *str, unsigned char color) {
 
 			terminal_buff[vga_idx] = (unsigned short) color << 8 | (unsigned short) str[idx];
 			vga_idx++;
+			set_cursor(vga_idx);
 
 		} else {
 			vga_newline();
+			set_cursor(vga_idx);
 		}
 
 		idx++;
@@ -61,6 +72,7 @@ void print_str(char *str, unsigned char color) {
 	// a single str automatically wraps, but a newline may still be needed at the end
 	if (idx / COLS > 0 && idx != 0 && str[idx - 1] != '\n') {
 		vga_newline();
+		set_cursor(vga_idx);
 	}
 } 
 
