@@ -9,9 +9,10 @@ kernel.obj: kernel/kernel.c drivers/display.c drivers/keyboard.c
 	gcc -m32 -c kernel/kernel.c -o kernel/kernel.o 
 	gcc -m32 -c drivers/display.c -o drivers/display.o 
 	gcc -m32 -c drivers/keyboard.c -o drivers/keyboard.o 
+	gcc -m32 -c drivers/ports.c -o drivers/ports.o 
 
 linker: linker.ld boot/boot.o kernel/kernel.o drivers/display.o drivers/keyboard.o
-	ld -m elf_i386 -T linker.ld -o kernel/kernel boot/boot.o drivers/display.o drivers/keyboard.o kernel/kernel.o
+	ld -m elf_i386 -T linker.ld -o kernel/kernel boot/boot.o drivers/ports.o drivers/display.o drivers/keyboard.o kernel/kernel.o
 
 iso: kernel.obj
 	mkdir -pv iso/boot/grub
