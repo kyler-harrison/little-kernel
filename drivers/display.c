@@ -20,6 +20,19 @@ void vga_newline(void) {
 
 // shifts screen down when output reaches end of terminal screen
 void shift(void) {
+	unsigned short *terminal_cp;  
+	int i;
+
+	// basically just removes first vga row, shifts each row by -1 index, blanks last row 
+	for (i = 0; i < MAX_IDX; i++) {
+		if (i < (MAX_IDX - COLS) * COLS) {
+			terminal_buff[i] = terminal_buff[i + COLS];
+		} else {
+			terminal_buff[i] = (unsigned short) BLACK << 8 | (unsigned short) ' ';
+		}
+	}
+
+	vga_idx = MAX_IDX - COLS;
 }
 
 // char in output defined by 2 bytes: str byte and color byte
@@ -29,6 +42,12 @@ void print_str(char *str, unsigned char color) {
 	while (str[idx]) {
 		// 2 byte input where first byte represents color and second represents character
 		if (str[idx] != '\n') {
+			
+			// bottom of screen reached 
+			if (vga_idx >= MAX_IDX) {
+				shift();
+			}
+
 			terminal_buff[vga_idx] = (unsigned short) color << 8 | (unsigned short) str[idx];
 			vga_idx++;
 
