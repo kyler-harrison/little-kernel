@@ -1,19 +1,29 @@
 #include "keyboard.h"
 #include "display.h"
+#include "ports.h"
+
+// print input back if valid 
+void keypress(unsigned char input) {
+	switch (input) {
+		case 0x1C :
+			print_str("VALID ENTER\n", RED);
+			break;
+		default:
+			break;
+	}
+}
 
 void repl(void) {
 	unsigned char input = 0x0;
 
 	while (1) {
 		// read value (byte) at keyboard addr into input variable
-		asm("in %%dx, %%al" : "=a" (input) : "d" (KEYBOARD_ADDR));  
+		input = read_port(KEYBOARD_ADDR);
 
 		if (input == 0x1C) {
-			print_str("ENTER\n", RED);
-			print_str("afterthought\n", RED);
-			//print_str("BREAKING", RED);
+			keypress(input);
 			input = 0x0;
-			asm("out %%al, %%dx" : : "a" (input), "d" (KEYBOARD_ADDR));
+			write_port(KEYBOARD_ADDR, input);
 		}
 	}
 }
