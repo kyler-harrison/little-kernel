@@ -3,7 +3,7 @@
 
 void main(void) {
 	clear_screen();
-	print_str("welcome to screen\n", GREEN);
+	print_str("> ", GREEN);
 	repl();
 
 	return;
