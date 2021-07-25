@@ -10,4 +10,5 @@
 
 void clear_screen(void);
 void vga_newline(void);
+void shift(void);
 void print_str(char *str, unsigned char color);
