@@ -1,2 +1,2 @@
 ## Little Kernel
-A simple kernel image.
+A simple kernel image
