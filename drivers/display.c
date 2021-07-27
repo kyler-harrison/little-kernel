@@ -14,11 +14,12 @@ void clear_screen(void) {
 	}
 }
 
-void set_cursor(int vga_idx) {
-	write_port(CURSOR_CTRL_ADDR, VGA_HIGH);
-	write_port(CURSOR_DATA_ADDR, (unsigned char) vga_idx >> 8);
+void set_cursor(int pos) {
+	// https://wiki.osdev.org/Text_Mode_Cursor#Moving_the_Cursor
 	write_port(CURSOR_CTRL_ADDR, VGA_LOW);
-	write_port(CURSOR_DATA_ADDR, (unsigned char) vga_idx & 0xff);
+	write_port(CURSOR_DATA_ADDR, (unsigned char) (pos & 0xFF));
+	write_port(CURSOR_CTRL_ADDR, VGA_HIGH);
+	write_port(CURSOR_DATA_ADDR, (unsigned char) ((pos >> 8) & 0xFF));
 }
 
 // move to next line on screen
@@ -46,7 +47,6 @@ void shift(void) {
 // char in output defined by 2 bytes: str byte and color byte
 void print_str(char *str, unsigned char color) {
 	int idx = 0;
-	int cursor_offset;
 
 	while (str[idx]) {
 		// 2 byte input where first byte represents color and second represents character
