@@ -4,5 +4,5 @@
 
 void append_buffer(char val);
 void clear_buffer(void);
-void keypress(unsigned char input);
+int keypress(unsigned char input);
 void repl(void);
