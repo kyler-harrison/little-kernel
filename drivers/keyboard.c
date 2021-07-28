@@ -1,22 +1,38 @@
 #include "keyboard.h"
 #include "display.h"
 #include "ports.h"
-
-#define num_keys 88  // TODO move to .h
+#include "utils.h"
 
 // hex keyboard scancodes: https://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
 // space either means space or tab 
-// special key indexes: 0:err, 1:esc, 12:backspace, 26:enter, 27: Lctrl, 42:Lshift, 54:Rshift, 55:prntscrn, 56:LALT
-char *keys[num_keys] = {"ESC", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE", " ", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "ENTER", "LCTRL", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "`", "LSHIFT", "\\", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "RSHIFT", "PRNTSCRN", "LALT", " "};
+// special key indexes: not:err, 0:esc, 11:backspace, 25:enter, 26: Lctrl, 41:Lshift, 53:Rshift, 54:prntscrn, 55:LALT, -1:RARROW, -3:LARROW
+// blank strings are keys im not implementing 
+char *keys[num_keys] = {"", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE", " ", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "ENTER", "", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "`", "", "\\", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "", "", "", " ", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "LARROW", "", "RARROW"};
 
-// print input back if valid 
+// process keyboard input 
 void keypress(unsigned char input) {
-	int idx = ((int) input) - 1;
+	int idx = ((int) input) - 1;  // scancodes are conveniently in order (except for 0th scancode)
+	char *key;
 
 	if (idx < num_keys) {
-		// TODO catch idx and handle LSHIFT/RSHIFT, ENTER, BACKSPACE
-		print_str(keys[idx], WHITE);
-	}
+		key = keys[idx];
+
+		// TODO actually handle stuff
+		if (str_comp(key, "BACKSPACE")) {
+			print_str("special\n", WHITE);
+		} else if (str_comp(key, "ENTER")) {
+			print_str("special\n", WHITE);
+		} else if (str_comp(key, "LARROW")) {
+			print_str("special\n", WHITE);
+		} else if (str_comp(key, "RARROW")) {
+			print_str("special\n", WHITE);
+		} else if (str_comp(key, "")) {
+			print_str("other guy\n", WHITE);
+		} else {
+			print_str(key, WHITE);
+		}
+
+	} 
 }
 
 void repl(void) {
