@@ -3,7 +3,6 @@
 
 void main(void) {
 	clear_screen();
-	print_str("> ", GREEN);
 	repl();
 
 	return;
