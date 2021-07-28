@@ -31,7 +31,11 @@ void keypress(unsigned char input) {
 
 		// TODO actually handle stuff
 		if (str_comp(key, "BACKSPACE")) {
-			print_str("special\n", WHITE);
+			buffer_idx--;
+			// TODO
+			// either need to track current cursor offset or get it in display, then decrement it here
+			// rm char on display (go to vga_idx in vga and make '') and then shift any chars ahead back
+			// vga_idx--
 		} else if (str_comp(key, "ENTER")) {
 			print_str("special\n", WHITE);
 		} else if (str_comp(key, "LARROW")) {
