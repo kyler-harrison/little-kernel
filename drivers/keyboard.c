@@ -7,7 +7,7 @@
 // space either means space or tab 
 // special key indexes: not:err, 0:esc, 11:backspace, 25:enter, 26: Lctrl, 41:Lshift, 53:Rshift, 54:prntscrn, 55:LALT, -1:RARROW, -3:LARROW
 // blank strings are keys im not implementing 
-char *keys[NUM_KEYS] = {"", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE", " ", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "ENTER", "", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "`", "", "\\", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "", "", "", " ", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "LARROW", "", "RARROW"};
+char *keys[NUM_KEYS] = {"", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE", " ", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "ENTER", "", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "`", "LSHIFT", "\\", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "RSHIFT", "", "", " ", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "LARROW", "", "RARROW"};
 char input_buffer[MAX_BUFFER_SIZE];
 int buffer_idx = 0;
 
@@ -25,18 +25,9 @@ void clear_buffer(void) {
 // process keyboard input 
 void keypress(unsigned char input) {
 	int idx = ((int) input) - 1;  // scancodes are conveniently in order (except for 0th scancode)
-	char *key;
-
-	// TODO once adding to buffer:
-	// if (buffer_idx < MAX_BUFFER_SIZE) {
-	// 	append_buffer(key);
-	// } else {
-	// 	clear_buffer();  // kind of lazy, but better than nothing
-	//  append_buffer(key);
-	// }
 
 	if (idx < NUM_KEYS) {
-		key = keys[idx];
+		char *key = keys[idx];
 
 		// TODO actually handle stuff
 		if (str_comp(key, "BACKSPACE")) {
@@ -47,10 +38,27 @@ void keypress(unsigned char input) {
 			print_str("special\n", WHITE);
 		} else if (str_comp(key, "RARROW")) {
 			print_str("special\n", WHITE);
+		} else if (str_comp_key(key, "LSHIFT") || str_comp(key, "RSHIFT")) {
+			print_str("special\n", WHITE);
+		}
 		} else if (str_comp(key, "")) {
 			print_str("other guy\n", WHITE);
 		} else {
 			print_str(key, WHITE);
+			char key_char = key[0];
+
+			// a lazy catch, but better than nothing
+			if (buffer_idx < MAX_BUFFER_SIZE) {
+				append_buffer(key_char);
+			} else {
+				clear_buffer();
+				append_buffer(key_char);
+			}
+
+			// TODO rm
+			print_str("\nbuffer:\n", WHITE);
+			print_str(input_buffer, WHITE);
+			print_str("\n", WHITE);
 		}
 	} 
 }
