@@ -1,5 +1,8 @@
 #define KEYBOARD_ADDR 0x60  
-#define num_keys 77
+#define NUM_KEYS 77
+#define MAX_BUFFER_SIZE 1000
 
+void append_buffer(char val);
+void clear_buffer(void);
 void keypress(unsigned char input);
 void repl(void);

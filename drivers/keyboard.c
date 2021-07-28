@@ -7,14 +7,35 @@
 // space either means space or tab 
 // special key indexes: not:err, 0:esc, 11:backspace, 25:enter, 26: Lctrl, 41:Lshift, 53:Rshift, 54:prntscrn, 55:LALT, -1:RARROW, -3:LARROW
 // blank strings are keys im not implementing 
-char *keys[num_keys] = {"", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE", " ", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "ENTER", "", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "`", "", "\\", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "", "", "", " ", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "LARROW", "", "RARROW"};
+char *keys[NUM_KEYS] = {"", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE", " ", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "ENTER", "", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "`", "", "\\", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "", "", "", " ", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "LARROW", "", "RARROW"};
+char input_buffer[MAX_BUFFER_SIZE];
+int buffer_idx = 0;
+
+// add char to input_buffer array (string)
+void append_buffer(char val) {
+	input_buffer[buffer_idx] = val;
+	buffer_idx++;
+}
+
+// kind of a lie, but input_buffer will only be read up to buffer_idx
+void clear_buffer(void) {
+	buffer_idx = 0;
+}
 
 // process keyboard input 
 void keypress(unsigned char input) {
 	int idx = ((int) input) - 1;  // scancodes are conveniently in order (except for 0th scancode)
 	char *key;
 
-	if (idx < num_keys) {
+	// TODO once adding to buffer:
+	// if (buffer_idx < MAX_BUFFER_SIZE) {
+	// 	append_buffer(key);
+	// } else {
+	// 	clear_buffer();  // kind of lazy, but better than nothing
+	//  append_buffer(key);
+	// }
+
+	if (idx < NUM_KEYS) {
 		key = keys[idx];
 
 		// TODO actually handle stuff
@@ -31,7 +52,6 @@ void keypress(unsigned char input) {
 		} else {
 			print_str(key, WHITE);
 		}
-
 	} 
 }
 
