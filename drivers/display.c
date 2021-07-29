@@ -31,7 +31,7 @@ void update_cursor_idx(int offset) {
 	int check = cursor_idx + offset;
 
 	// cursor is bounded to line
-	if (check > (current_line * COLS + 1 + offset) && check <= vga_idx) {
+	if ((offset == -1 && check > (current_line * COLS + 1 + offset)) || (offset == 1 && check <= vga_idx)) {
 		cursor_idx += offset;
 		set_cursor(cursor_idx);
 	}
