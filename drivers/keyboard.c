@@ -15,6 +15,7 @@ int shift_on = 0;
 // process keyboard input, returns 1 if newline needed (i.e. print out terminal pwd prompt again)
 void keypress(unsigned char input) {
 	int idx = ((int) input) - 1;  // scancodes are conveniently in order (except for 0th scancode)
+	char *buf;
 
 	if (idx < NUM_KEYS) {
 		char *key = keys[idx];
@@ -29,6 +30,7 @@ void keypress(unsigned char input) {
 		}
 
 		if (str_comp(key, "ENTER")) {
+			clear_buffer();
 			print_str("\n", WHITE);
 			print_str(TERM_PROMPT, TERM_COLOR);
 		} else {
