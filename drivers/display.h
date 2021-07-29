@@ -11,7 +11,10 @@
 #define RED 4
 #define YELLOW 14
 #define WHITE 15
+#define MAX_BUFFER_SIZE 1000
 
+void append_buffer(char val);
+void clear_buffer(void);
 void clear_screen(void);
 void vga_newline(void);
 void update_cursor_idx(int offset);
