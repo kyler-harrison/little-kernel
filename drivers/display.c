@@ -7,17 +7,21 @@ unsigned int vga_idx = 0;  // track end of line
 int lower_bound = 1;  // refers to user start idx of a single line, i.e. the ">" in terminal (will need to update once dirs implemented) 
 int current_line = 0;
 char input_buffer[MAX_BUFFER_SIZE];
-int buffer_idx = 0;
+int buffer_idx = 0;  // current idx of buffer to alter
+int buffer_size = 0;  // current size of input buffer
 
 // add char to input_buffer array (string)
-void append_buffer(char val) {
+void update_buffer(char val) {
 	input_buffer[buffer_idx] = val;
-	buffer_idx++;
 }
 
 // kind of a lie, but input_buffer will only be read up to buffer_idx
 void clear_buffer(void) {
 	buffer_idx = 0;
+}
+
+char * get_buffer() {
+	return input_buffer;
 }
 
 // empty screen
@@ -82,14 +86,32 @@ void print_str(char *str, unsigned char color) {
 		update_vga_idx(-1);
 		str = " ";
 		update = 0;
+
+		if (buffer_size > 0) {
+			update_buffer(str[0]);
+			buffer_idx--;
+		}
+
 	} else if (str_comp(str, "LARROW")) {
 		update_vga_idx(-1);
+
+		if (buffer_idx > 0) {
+			buffer_idx--;
+		}
+
 		return;
+
 	} else if (str_comp(str, "RARROW")) {
 		update_vga_idx(1);
+
+		if ((buffer_idx + 1) < buffer_size) {
+			buffer_idx++;
+		}
+
 		return;
 	}
 
+	// TODO update buffer as chars inputted
 	int idx = 0;
 	while (str[idx]) {
 		// 2 byte input where first byte represents color and second represents character
@@ -101,9 +123,13 @@ void print_str(char *str, unsigned char color) {
 			}
 
 			terminal_buff[vga_idx] = (unsigned short) color << 8 | (unsigned short) str[idx];
+
 			if (update) {
 				vga_idx++;
 				set_cursor(vga_idx);
+				update_buffer(str[idx]);
+				buffer_idx++;
+				buffer_size++;
 			}
 
 		} else {
