@@ -38,26 +38,25 @@ void keypress(unsigned char input) {
 			// not handling these for the moment
 		} else if (str_comp(key, "ENTER")) {
 			// fun from somewhere to process buffer (input is input_buffer[0] to input_buffer[buffer_end - 1])
-			clear_buffer();
 			print_str("\n", WHITE);
 			print_str("buffer: ", WHITE);
-
-			// get the actual inputted values (input_buffer may contain more than user would expect)
-			char *input;
-			for (int i = 0; i < buffer_end; i++) {
-				input[i] = input_buffer[i];
-			}
-
+			input_buffer[buffer_end] = '\0';  // this is safe right?
 			print_str(input_buffer, WHITE);
 			print_str("\n", WHITE);
 			print_str(TERM_PROMPT, TERM_COLOR);
+			clear_buffer();
 
 		} else if (str_comp(key, "")) {
 			// other unhandled special keys
 		} else if (str_comp(key, "BACKSPACE")) {
-			// TODO
-			// decrement buffer idx
-			// call update_vga_idx(-1)
+			if (buffer_end > 0) {
+				buffer_end--;  // basically just shifts where the end of the expected input is
+			}
+
+			update_vga_idx(-1);
+			print_str(" ", WHITE);
+			update_vga_idx(-1);
+
 		} else {
 			if (shift_on) {
 				//key = shift_keys[idx];  // TODO
@@ -82,15 +81,6 @@ void repl(void) {
 			keypress(input);
 			input = 0x0;
 			write_port(KEYBOARD_ADDR, input);  // set back to err code
-			//print_str("buffer:\n", WHITE);
-			//print_str(input_buffer, WHITE);
-			//print_str("\n", WHITE);
-
-			/*
-			if (nl_eval) {
-				print_str(prompt, GREEN);
-			}
-			*/
 		}
 	}
 }
