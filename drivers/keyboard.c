@@ -39,7 +39,6 @@ void keypress(unsigned char input) {
 		} else if (str_comp(key, "ENTER")) {
 			// fun from somewhere to process buffer (input is input_buffer[0] to input_buffer[buffer_end - 1])
 			print_str("\n", WHITE);
-			print_str("buffer: ", WHITE);
 			input_buffer[buffer_end] = '\0';  // this is safe right?
 			print_str(input_buffer, WHITE);
 			print_str("\n", WHITE);
@@ -68,6 +67,7 @@ void keypress(unsigned char input) {
 	} 
 }
 
+// this should probably be somewhere else
 void repl(void) {
 	unsigned char input = 0x0;
 	print_str(TERM_PROMPT, TERM_COLOR);
